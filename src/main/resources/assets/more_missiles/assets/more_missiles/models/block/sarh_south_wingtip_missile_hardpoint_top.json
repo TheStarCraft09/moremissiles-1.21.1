@@ -1,0 +1,10 @@
+{
+  "parent": "more_missiles:block/predicates/south_loaded_wingtip_hardpoint_top",
+  "textures": {
+    "all": "crusty_chunks:block/aluminumcasingside",
+    "particle": "crusty_chunks:block/aluminumcasingside",
+    "0": "more_missiles:block/hardpoint",
+    "1": "more_missiles:block/radarspear"
+  },
+    "render_type": "cutout"
+}

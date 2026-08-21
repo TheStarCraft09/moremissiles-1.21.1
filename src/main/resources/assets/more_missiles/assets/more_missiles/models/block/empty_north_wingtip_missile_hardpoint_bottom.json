@@ -1,0 +1,9 @@
+{
+  "parent": "more_missiles:block/predicates/empty_north_wingtip_hardpoint_bottom",
+    "textures": {
+        "all": "crusty_chunks:block/aluminumcasingside",
+        "particle": "crusty_chunks:block/aluminumcasingside",
+        "0": "more_missiles:block/hardpoint"
+    },
+    "render_type": "cutout"
+}

@@ -1,0 +1,102 @@
+{
+  "variants": {
+    "facing=east,hardpoint_type=bottom,missile_type=empty": {
+      "model": "more_missiles:block/empty_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=east,hardpoint_type=top,missile_type=empty": {
+      "model": "more_missiles:block/empty_wingtip_missile_hardpoint_top"
+    },
+    "facing=west,hardpoint_type=bottom,missile_type=empty": {
+      "model": "more_missiles:block/empty_west_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=west,hardpoint_type=top,missile_type=empty": {
+      "model": "more_missiles:block/empty_west_wingtip_missile_hardpoint_top"
+    },
+    "facing=north,hardpoint_type=bottom,missile_type=empty": {
+      "model": "more_missiles:block/empty_north_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=north,hardpoint_type=top,missile_type=empty": {
+      "model": "more_missiles:block/empty_north_wingtip_missile_hardpoint_top"
+    },
+    "facing=south,hardpoint_type=bottom,missile_type=empty": {
+      "model": "more_missiles:block/empty_south_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=south,hardpoint_type=top,missile_type=empty": {
+      "model": "more_missiles:block/empty_south_wingtip_missile_hardpoint_top"
+    },
+    "facing=east,hardpoint_type=bottom,missile_type=ir": {
+      "model": "more_missiles:block/ir_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=east,hardpoint_type=top,missile_type=ir": {
+      "model": "more_missiles:block/ir_wingtip_missile_hardpoint_top"
+    },
+    "facing=west,hardpoint_type=bottom,missile_type=ir": {
+      "model": "more_missiles:block/ir_west_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=west,hardpoint_type=top,missile_type=ir": {
+      "model": "more_missiles:block/ir_west_wingtip_missile_hardpoint_top"
+    },
+    "facing=north,hardpoint_type=bottom,missile_type=ir": {
+      "model": "more_missiles:block/ir_north_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=north,hardpoint_type=top,missile_type=ir": {
+      "model": "more_missiles:block/ir_north_wingtip_missile_hardpoint_top"
+    },
+    "facing=south,hardpoint_type=bottom,missile_type=ir": {
+      "model": "more_missiles:block/ir_south_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=south,hardpoint_type=top,missile_type=ir": {
+      "model": "more_missiles:block/ir_south_wingtip_missile_hardpoint_top"
+    },
+
+    "facing=east,hardpoint_type=bottom,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=east,hardpoint_type=top,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_wingtip_missile_hardpoint_top"
+    },
+    "facing=west,hardpoint_type=bottom,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_west_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=west,hardpoint_type=top,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_west_wingtip_missile_hardpoint_top"
+    },
+    "facing=north,hardpoint_type=bottom,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_north_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=north,hardpoint_type=top,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_north_wingtip_missile_hardpoint_top"
+    },
+    "facing=south,hardpoint_type=bottom,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_south_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=south,hardpoint_type=top,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_south_wingtip_missile_hardpoint_top"
+    },
+
+    "facing=east,hardpoint_type=bottom,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=east,hardpoint_type=top,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_wingtip_missile_hardpoint_top"
+    },
+    "facing=west,hardpoint_type=bottom,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_west_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=west,hardpoint_type=top,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_west_wingtip_missile_hardpoint_top"
+    },
+    "facing=north,hardpoint_type=bottom,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_north_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=north,hardpoint_type=top,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_north_wingtip_missile_hardpoint_top"
+    },
+    "facing=south,hardpoint_type=bottom,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_south_wingtip_missile_hardpoint_bottom"
+    },
+    "facing=south,hardpoint_type=top,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_south_wingtip_missile_hardpoint_top"
+    }
+  }
+}
