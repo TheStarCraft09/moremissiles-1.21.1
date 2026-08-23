@@ -10,8 +10,8 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
-@Mod(value = WariumBetterMissiles.MODID, dist = Dist.CLIENT)
-@EventBusSubscriber(modid = WariumBetterMissiles.MODID, value = Dist.CLIENT)
+@Mod(value = WariumBetterMissiles.MOD_ID, dist = Dist.CLIENT)
+@EventBusSubscriber(modid = WariumBetterMissiles.MOD_ID, value = Dist.CLIENT)
 public class WariumBetterMissilesClient {
     public WariumBetterMissilesClient(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);

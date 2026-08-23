@@ -20,6 +20,20 @@ sourceSets.main.resources {
 }
 
 repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+    flatDir {
+        dir 'libs'
+    }
 }
 
 base {
@@ -76,6 +90,8 @@ configurations {
 }
 
 dependencies {
+    implementation files('libs/wariumce-1.0.2BETA.jar')
+    implementation "maven.modrinth:8BmcQJ2H:tPkJmim6"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -104,6 +120,8 @@ publishing {
         }
     }
     repositories {
+
+
         maven {
             url "file://${project.projectDir}/repo"
         }

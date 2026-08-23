@@ -1,13 +1,13 @@
 package dev.lumareth.moremissiles.utils.procedures;
 
+import com.wariumce.init.CrustyChunksModItems;
 import dev.lumareth.moremissiles.block.records.ControllerTargetData;
 import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
-import net.mcreator.crustychunks.entity.RadarSpearMissileProjectileEntity;
-import net.mcreator.crustychunks.entity.SeekerSpearMissileProjectileEntity;
-import net.mcreator.crustychunks.entity.StrikeSpearProjectileEntity;
-import net.mcreator.crustychunks.init.CrustyChunksModEntities;
-import net.mcreator.crustychunks.init.CrustyChunksModItems;
+import com.wariumce.entity.RadarSpearMissileProjectileEntity;
+import com.wariumce.entity.SeekerSpearMissileProjectileEntity;
+import com.wariumce.entity.StrikeSpearProjectileEntity;
+import com.wariumce.init.CrustyChunksModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -19,9 +19,9 @@ import net.minecraft.world.phys.Vec3;
 
 public class WingtipHardpointProcedures {
     public static Missiletype reload(Missiletype currentMissileType, LivingEntity entity, InteractionHand interactionHand) {
-    if (interactionHand != InteractionHand.MAIN_HAND){
-        return currentMissileType;
-    }
+        if (interactionHand != InteractionHand.MAIN_HAND) {
+            return currentMissileType;
+        }
 
     if (currentMissileType == Missiletype.EMPTY) {
         ItemStack itemStack = entity.getItemInHand(interactionHand);
@@ -53,7 +53,20 @@ public class WingtipHardpointProcedures {
 
     }
 
+
+
     return Missiletype.EMPTY;
+    }
+
+
+    public static void fireMissile(Level level, BlockPos hardpointPos, HardpointType state, Vec3 facing, Missiletype missiletype) {
+        if (missiletype == Missiletype.IR) {
+            fireSeekerSpear(level, hardpointPos, state, facing);
+        } else if (missiletype == Missiletype.SARH) {
+            fireRadarSpear(level, hardpointPos, state, facing);
+        } else if (missiletype == Missiletype.SACLOCS) {
+            fireStrikeSpear(level, hardpointPos, state, facing);
+        }
     }
 
     public static ItemStack returnDroppedItem(Missiletype missiletype) {
@@ -63,7 +76,9 @@ public class WingtipHardpointProcedures {
             return new ItemStack(CrustyChunksModItems.RADAR_SPEAR_MISSILE.get());
         } else if (missiletype == Missiletype.SACLOCS) {
             return new ItemStack(CrustyChunksModItems.STRIKE_SPEAR_MISSILE.get());
-        } else {
+        }
+         else {
+
             return ItemStack.EMPTY;
         }
     }
@@ -91,6 +106,8 @@ public class WingtipHardpointProcedures {
         }
     }
 
+
+
     public static boolean getTriggerFromControlNode(BlockEntity controlNode, Level level, double Channel) {
         if (!level.isClientSide()) {
             String triggerKey = "Trigger" + Channel;
@@ -105,6 +122,8 @@ public class WingtipHardpointProcedures {
             return false;
         }
     }
+
+
 
     public static double returnLaunchOffset(HardpointType hardpointType) {
         if (hardpointType == HardpointType.BOTTOM) {
@@ -122,9 +141,7 @@ public class WingtipHardpointProcedures {
             SeekerSpearMissileProjectileEntity missile = new SeekerSpearMissileProjectileEntity(CrustyChunksModEntities.SEEKER_SPEAR_MISSILE_PROJECTILE.get(), serverLevel);
 
             missile.setBaseDamage(10.0D);
-            missile.setKnockback(2);
             missile.setSilent(true);
-            missile.setPierceLevel((byte) 10);
             missile.setCritArrow(true);
 
             missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(state), hardpointPos.getZ() + 0.5D);
@@ -144,9 +161,7 @@ public class WingtipHardpointProcedures {
             RadarSpearMissileProjectileEntity missile = new RadarSpearMissileProjectileEntity(CrustyChunksModEntities.RADAR_SPEAR_MISSILE_PROJECTILE.get(), serverLevel);
 
             missile.setBaseDamage(10.0D);
-            missile.setKnockback(2);
             missile.setSilent(true);
-            missile.setPierceLevel((byte) 10);
             missile.setCritArrow(true);
 
             missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(state), hardpointPos.getZ() + 0.5D);
@@ -170,9 +185,7 @@ public class WingtipHardpointProcedures {
             StrikeSpearProjectileEntity missile = new StrikeSpearProjectileEntity(CrustyChunksModEntities.STRIKE_SPEAR_PROJECTILE.get(), serverLevel);
 
             missile.setBaseDamage(10.0D);
-            missile.setKnockback(2);
             missile.setSilent(true);
-            missile.setPierceLevel((byte) 10);
             missile.setCritArrow(true);
 
             missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(state), hardpointPos.getZ() + 0.5D);

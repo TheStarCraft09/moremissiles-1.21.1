@@ -1,5 +1,6 @@
 package dev.lumareth.moremissiles;
 
+import dev.lumareth.moremissiles.block.ModBlockEntities;
 import dev.lumareth.moremissiles.block.ModBlocks;
 import dev.lumareth.moremissiles.item.ModCreativeModeTabs;
 import dev.lumareth.moremissiles.item.ModItems;
@@ -30,6 +31,7 @@ public class WariumBetterMissiles {
 
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModCreativeModeTabs.WARIUM_MORE_MISSILES.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);

@@ -1,8 +1,8 @@
 package dev.lumareth.moremissiles.item;
 
 
+import com.wariumce.init.CrustyChunksModItems;
 import dev.lumareth.moremissiles.WariumBetterMissiles;
-import net.mcreator.crustychunks.init.CrustyChunksModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
