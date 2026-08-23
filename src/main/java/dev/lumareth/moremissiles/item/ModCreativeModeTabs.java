@@ -17,6 +17,7 @@ public class ModCreativeModeTabs {
             .displayItems((params, output) -> {
             output.accept(ModItems.EMPTY_WINGTIP_MISSILE_HARDPOINT.get());
             output.accept(ModItems.WING_HARDPOINT.get());
+            output.accept(ModItems.DARK_WING_HARDPOINT.get());
             })
             .build()
     );

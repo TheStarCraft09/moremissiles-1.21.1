@@ -1,4 +1,6 @@
 {
   "item_groups.more_missiles.more_missiles": "Warium: Better Missiles",
-  "block.more_missiles.empty_wingtip_missile_hardpoint": "Wingtip Missile Hardpoint"
+  "block.more_missiles.empty_wingtip_missile_hardpoint": "Wingtip Missile Hardpoint",
+  "block.more_missiles.wing_hardpoint": "Aluminum Wing Hardpoint",
+  "block.more_missiles.dark_wing_hardpoint": "Dark Aluminum Wing Hardpoint"
 }

@@ -1,6 +1,7 @@
 package dev.lumareth.moremissiles.block;
 
 import dev.lumareth.moremissiles.WariumBetterMissiles;
+import dev.lumareth.moremissiles.block.types.DarkHardpointBlock;
 import dev.lumareth.moremissiles.block.types.HardpointBlock;
 import dev.lumareth.moremissiles.block.types.WingtipHardpointBlock;
 import net.minecraft.core.registries.Registries;
@@ -12,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, WariumBetterMissiles.MOD_ID);
 
+    public static final DeferredHolder<Block, Block> DARK_WING_HARDPOINT = BLOCKS.register("dark_wing_hardpoint", () -> new DarkHardpointBlock(Block.Properties.of().strength(1.0f).noOcclusion()));
     public static final DeferredHolder<Block, Block> WING_HARDPOINT = BLOCKS.register("wing_hardpoint", () -> new HardpointBlock(Block.Properties.of().strength(1.0f).noOcclusion()));
     public static final DeferredHolder<Block, Block> EMPTY_WINGTIP_MISSILE_HARDPOINT = BLOCKS.register("empty_wingtip_missile_hardpoint", () -> new WingtipHardpointBlock(Block.Properties.of().strength(1.0f).noOcclusion()));
 }

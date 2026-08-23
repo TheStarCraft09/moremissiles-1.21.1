@@ -1,0 +1,10 @@
+{
+  "parent": "more_missiles:block/predicates/loaded_wing_hardpoint_north",
+  "textures": {
+    "0": "more_missiles:block/hardpoint",
+    "1": "more_missiles:block/dark_gray_aluminum",
+    "2": "more_missiles:block/seekerspear",
+    "particle": "more_missiles:block/dark_gray_aluminum"
+  },
+  "render_type": "cutout"
+}
