@@ -5,7 +5,7 @@ import dev.lumareth.moremissiles.block.entity.WingtipHardpointBlockEntity;
 import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
 import dev.lumareth.moremissiles.block.states.ModBlockStates;
-import dev.lumareth.moremissiles.utils.procedures.WingtipHardpointProcedures;
+import dev.lumareth.moremissiles.utils.procedures.HardpointProcedures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -48,16 +48,19 @@ public class WingtipHardpointBlock extends HorizontalDirectionalBlock implements
         return null;
     }
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, TYPE, MISSILE_TYPE);
     }
 
     @NotNull
+    @Override
     public VoxelShape getShape(BlockState blockState,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
         HardpointType hardpointType = blockState.getValue(TYPE);
         return switch (hardpointType) {
             case BOTTOM -> BOTTOM;
             case TOP -> TOP;
+            default -> BOTTOM;
         };
     }
 
@@ -71,7 +74,7 @@ public class WingtipHardpointBlock extends HorizontalDirectionalBlock implements
     protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide()) {
             Missiletype current = blockState.getValue(MISSILE_TYPE);
-            Missiletype updated = WingtipHardpointProcedures.reload(current, player, interactionHand);
+            Missiletype updated = HardpointProcedures.reload(current, player, interactionHand);
             if (updated != current) {
                 level.setBlock(blockPos, blockState.setValue(MISSILE_TYPE, updated), 3);
             }
@@ -80,6 +83,7 @@ public class WingtipHardpointBlock extends HorizontalDirectionalBlock implements
     }
 
     @Nullable
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos blockPos = context.getClickedPos();
         BlockState blockState1 = this.defaultBlockState().setValue(FACING, context.getHorizontalDirection()).setValue(TYPE, HardpointType.BOTTOM).setValue(MISSILE_TYPE, Missiletype.EMPTY);
@@ -104,7 +108,7 @@ public class WingtipHardpointBlock extends HorizontalDirectionalBlock implements
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState newState, boolean isMoving) {
         if (blockState.getBlock() != newState.getBlock()) {
-            ItemStack itemStack = WingtipHardpointProcedures.returnDroppedItem(blockState.getValue(MISSILE_TYPE));
+            ItemStack itemStack = HardpointProcedures.returnDroppedItem(blockState.getValue(MISSILE_TYPE));
             if (!itemStack.isEmpty()) {
                 Block.popResource(level, blockPos, itemStack);
             }

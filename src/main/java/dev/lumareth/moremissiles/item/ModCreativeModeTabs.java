@@ -16,6 +16,7 @@ public class ModCreativeModeTabs {
             .icon(() -> CrustyChunksModItems.EMPTY_MISSILE_HARDPOINT.get().getDefaultInstance())
             .displayItems((params, output) -> {
             output.accept(ModItems.EMPTY_WINGTIP_MISSILE_HARDPOINT.get());
+            output.accept(ModItems.WING_HARDPOINT.get());
             })
             .build()
     );

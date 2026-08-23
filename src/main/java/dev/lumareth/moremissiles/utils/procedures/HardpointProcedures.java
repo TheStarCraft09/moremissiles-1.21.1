@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class WingtipHardpointProcedures {
+public class HardpointProcedures {
     public static Missiletype reload(Missiletype currentMissileType, LivingEntity entity, InteractionHand interactionHand) {
         if (interactionHand != InteractionHand.MAIN_HAND) {
             return currentMissileType;
@@ -129,13 +129,17 @@ public class WingtipHardpointProcedures {
         if (hardpointType == HardpointType.BOTTOM) {
             return -0.5;
         } else if (hardpointType == HardpointType.TOP) {
+            return -1;
+        } else if (hardpointType == HardpointType.WING) {
+            return -0.75;
+        } else if (hardpointType == HardpointType.INTERNAL) {
             return -1.5;
         } else {
             return 0;
         }
     }
 
-    public static void fireSeekerSpear(Level level, BlockPos hardpointPos, HardpointType state, Vec3 facing) {
+    public static void fireSeekerSpear(Level level, BlockPos hardpointPos, HardpointType type, Vec3 facing) {
         if (!level.isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) level;
             SeekerSpearMissileProjectileEntity missile = new SeekerSpearMissileProjectileEntity(CrustyChunksModEntities.SEEKER_SPEAR_MISSILE_PROJECTILE.get(), serverLevel);
@@ -144,7 +148,7 @@ public class WingtipHardpointProcedures {
             missile.setSilent(true);
             missile.setCritArrow(true);
 
-            missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(state), hardpointPos.getZ() + 0.5D);
+            missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(type), hardpointPos.getZ() + 0.5D);
 
             double LaunchX = facing.x;
             double LaunchY = facing.y;
@@ -155,7 +159,7 @@ public class WingtipHardpointProcedures {
         }
     }
 
-    public static void fireRadarSpear(Level level, BlockPos hardpointPos, HardpointType state, Vec3 facing){
+    public static void fireRadarSpear(Level level, BlockPos hardpointPos, HardpointType type, Vec3 facing){
         if (!level.isClientSide) {
             ServerLevel serverLevel = (ServerLevel) level;
             RadarSpearMissileProjectileEntity missile = new RadarSpearMissileProjectileEntity(CrustyChunksModEntities.RADAR_SPEAR_MISSILE_PROJECTILE.get(), serverLevel);
@@ -164,7 +168,7 @@ public class WingtipHardpointProcedures {
             missile.setSilent(true);
             missile.setCritArrow(true);
 
-            missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(state), hardpointPos.getZ() + 0.5D);
+            missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(type), hardpointPos.getZ() + 0.5D);
 
             double LaunchX = facing.x;
             double LaunchY = facing.y;
@@ -179,7 +183,7 @@ public class WingtipHardpointProcedures {
 
         }
     }
-    public static void fireStrikeSpear(Level level, BlockPos hardpointPos, HardpointType state, Vec3 facing){
+    public static void fireStrikeSpear(Level level, BlockPos hardpointPos, HardpointType type, Vec3 facing){
         if (!level.isClientSide) {
             ServerLevel serverLevel = (ServerLevel) level;
             StrikeSpearProjectileEntity missile = new StrikeSpearProjectileEntity(CrustyChunksModEntities.STRIKE_SPEAR_PROJECTILE.get(), serverLevel);
@@ -188,7 +192,7 @@ public class WingtipHardpointProcedures {
             missile.setSilent(true);
             missile.setCritArrow(true);
 
-            missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(state), hardpointPos.getZ() + 0.5D);
+            missile.setPos(hardpointPos.getX() + 0.5D, hardpointPos.getY() + returnLaunchOffset(type), hardpointPos.getZ() + 0.5D);
 
             double LaunchX = facing.x;
             double LaunchY = facing.y;

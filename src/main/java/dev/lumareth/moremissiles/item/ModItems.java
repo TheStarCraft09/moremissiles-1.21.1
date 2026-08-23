@@ -11,5 +11,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, WariumBetterMissiles.MOD_ID);
 
+    public static final DeferredHolder<Item, Item> WING_HARDPOINT = ITEMS.register("wing_hardpoint", () -> new BlockItem(ModBlocks.WING_HARDPOINT.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> EMPTY_WINGTIP_MISSILE_HARDPOINT = ITEMS.register("empty_wingtip_missile_hardpoint", () -> new BlockItem(ModBlocks.EMPTY_WINGTIP_MISSILE_HARDPOINT.get(), new Item.Properties()));
 }

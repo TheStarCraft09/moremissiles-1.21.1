@@ -6,7 +6,7 @@ import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
 import dev.lumareth.moremissiles.block.states.ModBlockStates;
 import dev.lumareth.moremissiles.block.types.WingtipHardpointBlock;
-import dev.lumareth.moremissiles.utils.procedures.WingtipHardpointProcedures;
+import dev.lumareth.moremissiles.utils.procedures.HardpointProcedures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -86,8 +86,8 @@ public class WingtipHardpointBlockEntity extends BlockEntity {
         } else {
             currentTarget = 0D;
         }
-        targetData = WingtipHardpointProcedures.getTargetDataFromControlNode(controlBlockEntity, level, currentTarget);
-        Trigger = WingtipHardpointProcedures.getTriggerFromControlNode(controlBlockEntity, level, channel);
+        targetData = HardpointProcedures.getTargetDataFromControlNode(controlBlockEntity, level, currentTarget);
+        Trigger = HardpointProcedures.getTriggerFromControlNode(controlBlockEntity, level, channel);
         TargetPos = targetData.position();
         TargetVelocity = targetData.velocity();
         setChanged();
@@ -109,15 +109,15 @@ public class WingtipHardpointBlockEntity extends BlockEntity {
         switch (blockState.getValue(MISSILE_TYPE)) {
             case IR -> {
                 HardpointType hardpointType = blockState.getValue(ModBlockStates.HARDPOINT_TYPE);
-                WingtipHardpointProcedures.fireSeekerSpear(level, this.worldPosition, hardpointType, launchDirection);
+                HardpointProcedures.fireSeekerSpear(level, this.worldPosition, hardpointType, launchDirection);
             }
             case SARH -> {
                 HardpointType hardpointType = blockState.getValue(ModBlockStates.HARDPOINT_TYPE);
-                WingtipHardpointProcedures.fireRadarSpear(level, this.worldPosition, hardpointType, launchDirection);
+                HardpointProcedures.fireRadarSpear(level, this.worldPosition, hardpointType, launchDirection);
             }
             case SACLOCS -> {
                 HardpointType hardpointType = blockState.getValue(ModBlockStates.HARDPOINT_TYPE);
-                WingtipHardpointProcedures.fireStrikeSpear(level, this.worldPosition, hardpointType, launchDirection);
+                HardpointProcedures.fireStrikeSpear(level, this.worldPosition, hardpointType, launchDirection);
             }
         }
         level.setBlock(this.worldPosition, blockState.setValue(MISSILE_TYPE, Missiletype.EMPTY), Block.UPDATE_CLIENTS);

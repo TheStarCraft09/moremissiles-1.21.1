@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,hardpoint_type=wing,missile_type=empty": {
+      "model": "more_missiles:block/empty_wing_hardpoint"
+    },
+    "facing=north,hardpoint_type=wing,missile_type=ir": {
+      "model": "more_missiles:block/ir_wing_hardpoint"
+    },
+    "facing=north,hardpoint_type=wing,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_wing_hardpoint"
+    },
+    "facing=north,hardpoint_type=wing,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_wing_hardpoint"
+    },
+    "facing=east,hardpoint_type=wing,missile_type=empty": {
+      "model": "more_missiles:block/empty_wing_hardpoint",
+      "y": 90
+    },
+    "facing=east,hardpoint_type=wing,missile_type=ir": {
+      "model": "more_missiles:block/ir_wing_hardpoint",
+      "y": 90
+    },
+    "facing=east,hardpoint_type=wing,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_wing_hardpoint",
+      "y": 90
+    },
+    "facing=east,hardpoint_type=wing,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_wing_hardpoint",
+      "y": 90
+    },
+    "facing=south,hardpoint_type=wing,missile_type=empty": {
+      "model": "more_missiles:block/empty_wing_hardpoint",
+      "y": 180
+    },
+    "facing=south,hardpoint_type=wing,missile_type=ir": {
+      "model": "more_missiles:block/ir_wing_hardpoint",
+      "y": 180
+    },
+    "facing=south,hardpoint_type=wing,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_wing_hardpoint",
+      "y": 180
+    },
+    "facing=south,hardpoint_type=wing,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_wing_hardpoint",
+      "y": 180
+    },
+    "facing=west,hardpoint_type=wing,missile_type=empty": {
+      "model": "more_missiles:block/empty_wing_hardpoint",
+      "y": 270
+    },
+    "facing=west,hardpoint_type=wing,missile_type=ir": {
+      "model": "more_missiles:block/ir_wing_hardpoint",
+      "y": 270
+    },
+    "facing=west,hardpoint_type=wing,missile_type=sarh": {
+      "model": "more_missiles:block/sarh_wing_hardpoint",
+      "y": 270
+    },
+    "facing=west,hardpoint_type=wing,missile_type=saclocs": {
+      "model": "more_missiles:block/saclocs_wing_hardpoint",
+      "y": 270
+    }
+  }
+}

@@ -18,4 +18,10 @@ public class ModBlockEntities {
                             WingtipHardpointBlockEntity::new,
                             ModBlocks.EMPTY_WINGTIP_MISSILE_HARDPOINT.get()
                     ).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WingtipHardpointBlockEntity>> WING_HARDPOINT =
+            BLOCK_ENTITIES.register("wing_hardpoint",
+                    () -> BlockEntityType.Builder.of(
+                            WingtipHardpointBlockEntity::new,
+                            ModBlocks.WING_HARDPOINT.get()
+                    ).build(null));
 }

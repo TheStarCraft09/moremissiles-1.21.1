@@ -4,7 +4,9 @@ import net.minecraft.util.StringRepresentable;
 
 public enum HardpointType implements StringRepresentable {
     TOP("top"),
-    BOTTOM("bottom");
+    BOTTOM("bottom"),
+    WING("wing"),
+    INTERNAL("internal");
 
     private final String name;
 

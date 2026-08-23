@@ -1,0 +1,9 @@
+{
+  "parent": "more_missiles:block/predicates/wing_hardpoint_north",
+  "textures": {
+    "0": "more_missiles:block/hardpoint",
+    "1": "more_missiles:block/aluminum",
+    "particle": "more_missiles:block/aluminum"
+  },
+  "render_type": "cutout"
+}
