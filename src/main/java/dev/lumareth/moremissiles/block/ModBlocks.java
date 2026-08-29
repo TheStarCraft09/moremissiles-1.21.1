@@ -1,9 +1,9 @@
 package dev.lumareth.moremissiles.block;
 
 import dev.lumareth.moremissiles.WariumBetterMissiles;
-import dev.lumareth.moremissiles.block.types.DarkHardpointBlock;
-import dev.lumareth.moremissiles.block.types.HardpointBlock;
-import dev.lumareth.moremissiles.block.types.WingtipHardpointBlock;
+import dev.lumareth.moremissiles.block.block.DarkHardpointBlock;
+import dev.lumareth.moremissiles.block.block.HardpointBlock;
+import dev.lumareth.moremissiles.block.block.WingtipHardpointBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;

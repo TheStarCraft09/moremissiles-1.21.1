@@ -1,0 +1,12 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "more_missiles:item/radar_linker"
+  },
+  "overrides": [
+    {
+      "predicate": { "more_missiles:mode": 1.0 },
+      "model": "more_missiles:item/radar_toolkit_configuring"
+    }
+  ]
+}

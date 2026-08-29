@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "more_missiles:block/radar_control_node"
+    },
+    "facing=east": {
+      "model":  "more_missiles:block/radar_control_node",
+      "y": 90
+    },
+    "facing=south": {
+      "model":  "more_missiles:block/radar_control_node",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "more_missiles:block/radar_control_node",
+      "y": 270
+    }
+  }
+}

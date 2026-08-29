@@ -1,6 +1,7 @@
 package dev.lumareth.moremissiles.utils.procedures;
 
 import com.wariumce.init.CrustyChunksModItems;
+import dev.lumareth.moremissiles.WariumBetterMissiles;
 import dev.lumareth.moremissiles.block.records.ControllerTargetData;
 import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
@@ -88,6 +89,7 @@ public class HardpointProcedures {
             if (controleNodeBlockEntity != null) {
                 Vec3 targetPos = Vec3.ZERO;
                 Vec3 targetVelocity = Vec3.ZERO;
+                WariumBetterMissiles.LOGGER.debug("Getting target data from control node");
                 BlockEntity bE = controleNodeBlockEntity;
                 double TargetX = bE.getPersistentData().getDouble("TargetX" + target);
                 double TargetY = bE.getPersistentData().getDouble("TargetY" + target);
@@ -97,6 +99,7 @@ public class HardpointProcedures {
                 double VelocityY = bE.getPersistentData().getDouble("TMY" + target);
                 double VelocityZ = bE.getPersistentData().getDouble("TMZ" + target);
                 targetVelocity = new Vec3(VelocityX, VelocityY, VelocityZ);
+                WariumBetterMissiles.LOGGER.debug("Target Position: {}, Target Velocity: {}", targetPos, targetVelocity);
                 return new ControllerTargetData(targetPos, targetVelocity);
             } else {
                 return new ControllerTargetData(Vec3.ZERO, Vec3.ZERO);

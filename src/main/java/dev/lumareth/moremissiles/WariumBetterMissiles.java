@@ -2,8 +2,10 @@ package dev.lumareth.moremissiles;
 
 import dev.lumareth.moremissiles.block.ModBlockEntities;
 import dev.lumareth.moremissiles.block.ModBlocks;
+import dev.lumareth.moremissiles.compat.createradars.CreateRadarsCompat;
 import dev.lumareth.moremissiles.item.ModCreativeModeTabs;
 import dev.lumareth.moremissiles.item.ModItems;
+import dev.lumareth.moremissiles.utils.ModDataComponents;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -33,6 +35,8 @@ public class WariumBetterMissiles {
         ModItems.ITEMS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModCreativeModeTabs.WARIUM_MORE_MISSILES.register(modEventBus);
+        CreateRadarsCompat.registerIfPresent(modEventBus);
+        ModDataComponents.DATA_COMPONENTS.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
 

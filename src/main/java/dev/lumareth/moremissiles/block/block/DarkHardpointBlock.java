@@ -1,4 +1,4 @@
-package dev.lumareth.moremissiles.block.types;
+package dev.lumareth.moremissiles.block.block;
 
 import net.minecraft.world.level.block.EntityBlock;
 

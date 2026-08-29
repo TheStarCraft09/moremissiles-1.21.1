@@ -31,6 +31,18 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    maven { url = "https://maven.createmod.net" }
+    exclusiveContent {
+        forRepository {
+            maven {
+                url = "https://maven.ryanhcode.dev/releases"
+            }
+        }
+        filter {
+            includeGroup("dev.ryanhcode.sable-companion")
+        }
+    }
+
     flatDir {
         dir 'libs'
     }
@@ -92,6 +104,22 @@ configurations {
 dependencies {
     implementation files('libs/wariumce-1.0.2BETA.jar')
     implementation "maven.modrinth:8BmcQJ2H:tPkJmim6"
+    implementation "maven.modrinth:BLu2Yqfq:AntNFNAx"
+    implementation "maven.modrinth:LNytGWDc:UjX6dr61"
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:[1.6.0,)")) {}
+    jarJar(api("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version") {
+        version {
+            strictly "[$ponder_version+mc$minecraft_version,)"
+            prefer "$ponder_version+mc$minecraft_version"
+        }
+    })
+    compileOnlyApi("dev.engine-room.flywheel:flywheel-neoforge-api-$minecraft_version:$flywheel_version")
+    jarJar(runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-$minecraft_version:$flywheel_version") {
+        version {
+            strictly "[${flywheel_version},2.0)"
+            prefer flywheel_version
+        }
+    })
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

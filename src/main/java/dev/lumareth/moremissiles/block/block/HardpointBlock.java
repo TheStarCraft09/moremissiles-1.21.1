@@ -1,8 +1,7 @@
-package dev.lumareth.moremissiles.block.types;
+package dev.lumareth.moremissiles.block.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.lumareth.moremissiles.block.entity.HardpointBlockEntity;
-import dev.lumareth.moremissiles.block.entity.WingtipHardpointBlockEntity;
 import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
 import dev.lumareth.moremissiles.block.states.ModBlockStates;
@@ -94,8 +93,6 @@ public class HardpointBlock extends HorizontalDirectionalBlock implements Entity
                 if (blockEntity instanceof HardpointBlockEntity be){
                     be.tick();
                 }
-            } else {
-                return;
             }
         };
     }

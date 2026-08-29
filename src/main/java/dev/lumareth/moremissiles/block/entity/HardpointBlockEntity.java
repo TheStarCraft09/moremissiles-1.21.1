@@ -5,7 +5,7 @@ import dev.lumareth.moremissiles.block.records.ControllerTargetData;
 import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
 import dev.lumareth.moremissiles.block.states.ModBlockStates;
-import dev.lumareth.moremissiles.block.types.WingtipHardpointBlock;
+import dev.lumareth.moremissiles.block.block.WingtipHardpointBlock;
 import dev.lumareth.moremissiles.utils.procedures.HardpointProcedures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -86,8 +86,13 @@ public class HardpointBlockEntity extends BlockEntity {
         Trigger = HardpointProcedures.getTriggerFromControlNode(controlBlockEntity, level, channel);
         TargetPos = targetData.position();
         TargetVelocity = targetData.velocity();
+        data.putDouble("TargetX", TargetPos.x);
+        data.putDouble("TargetY", TargetPos.y);
+        data.putDouble("TargetZ", TargetPos.z);
+        data.putDouble("MX", TargetVelocity.x);
+        data.putDouble("MY", TargetVelocity.y);
+        data.putDouble("MZ", TargetVelocity.z);
         setChanged();
-        Vec3 launchDirection = getLaunchDirection();
 
         if (Trigger) {
             if (this.getBlockState().getValue(MISSILE_TYPE) != Missiletype.EMPTY) {

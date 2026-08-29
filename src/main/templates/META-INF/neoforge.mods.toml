@@ -64,5 +64,23 @@ Addon for Warium that adds more missiles and missile hardpoints to the game.
     versionRange = "[4.6.0,)"
     ordering = "NONE"
     side = "BOTH"
-#[features.${mod_id}]
+[[dependencies.${mod_id}]]
+    modId = "sable-companion"
+    type = "optional"
+    versionRange = "[1.0.0,)"
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.${mod_id}]]
+    modId = "create_radar"
+    type = "optional"
+    versionRange = "[0.4.9.4,)"
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.${mod_id}]]
+    modId = "create"
+    type = "optional"
+    versionRange = "[6.0.10,)"
+    ordering = "NONE"
+    side = "BOTH"
+
 #openGLVersion="[3.2,)"

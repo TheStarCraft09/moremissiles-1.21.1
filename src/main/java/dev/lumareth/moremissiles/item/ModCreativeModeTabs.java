@@ -3,9 +3,11 @@ package dev.lumareth.moremissiles.item;
 
 import com.wariumce.init.CrustyChunksModItems;
 import dev.lumareth.moremissiles.WariumBetterMissiles;
+import dev.lumareth.moremissiles.compat.createradars.item.RadarsCompatModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -18,6 +20,10 @@ public class ModCreativeModeTabs {
             output.accept(ModItems.EMPTY_WINGTIP_MISSILE_HARDPOINT.get());
             output.accept(ModItems.WING_HARDPOINT.get());
             output.accept(ModItems.DARK_WING_HARDPOINT.get());
+            output.accept(ModItems.RADAR_TOOLKIT.get());
+            if ((ModList.get().isLoaded("create") && ModList.get().isLoaded("create_radar"))) {
+                output.accept(RadarsCompatModItems.RADAR_CONTROL_NODE.get());
+            }
             })
             .build()
     );

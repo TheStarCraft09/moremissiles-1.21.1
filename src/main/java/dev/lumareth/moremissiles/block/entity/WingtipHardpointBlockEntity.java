@@ -5,7 +5,7 @@ import dev.lumareth.moremissiles.block.records.ControllerTargetData;
 import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
 import dev.lumareth.moremissiles.block.states.ModBlockStates;
-import dev.lumareth.moremissiles.block.types.WingtipHardpointBlock;
+import dev.lumareth.moremissiles.block.block.WingtipHardpointBlock;
 import dev.lumareth.moremissiles.utils.procedures.HardpointProcedures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
