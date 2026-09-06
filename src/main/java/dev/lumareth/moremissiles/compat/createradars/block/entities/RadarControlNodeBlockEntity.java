@@ -33,6 +33,7 @@ public class RadarControlNodeBlockEntity extends SmartBlockEntity {
 
     @Override
     public void tick() {
+        super.tick();
         CompoundTag data = this.getPersistentData();
         data.putDouble("Channel", 0D);
         if (!data.contains("RadarX") || !data.contains("RadarY") || !data.contains("RadarZ")) {
@@ -42,6 +43,7 @@ public class RadarControlNodeBlockEntity extends SmartBlockEntity {
         double radarY = data.getDouble("RadarY");
         double radarZ = data.getDouble("RadarZ");
         double channel = data.getDouble("Channel");
+        WariumBetterMissiles.LOGGER.debug("Radar position: {}, {}, {}", radarX, radarY, radarZ);
 
         radarPos = BlockPos.containing(radarX, radarY, radarZ);
         assert level != null;
@@ -80,6 +82,7 @@ public class RadarControlNodeBlockEntity extends SmartBlockEntity {
 
             }
         }
+        this.setChanged();
     }
 
     private void changeTargetIDX(int change, List<RadarTrack> tracks){
