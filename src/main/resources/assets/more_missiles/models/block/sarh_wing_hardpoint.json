@@ -1,5 +1,5 @@
 {
-  "parent": "more_missiles:block/predicates/loaded_wing_hardpoint_north",
+  "parent": "more_missiles:block/predicates/sarh_loaded_wing_hardpoint_north",
   "textures": {
     "0": "more_missiles:block/hardpoint",
     "1": "more_missiles:block/aluminum",

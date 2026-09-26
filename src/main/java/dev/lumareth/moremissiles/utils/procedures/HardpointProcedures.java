@@ -10,6 +10,7 @@ import com.wariumce.entity.SeekerSpearMissileProjectileEntity;
 import com.wariumce.entity.StrikeSpearProjectileEntity;
 import com.wariumce.init.CrustyChunksModEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -111,19 +112,27 @@ public class HardpointProcedures {
 
 
 
-    public static boolean getTriggerFromControlNode(BlockEntity controlNode, Level level, double Channel) {
-        if (!level.isClientSide()) {
-            String triggerKey = "Trigger" + Channel;
-            double triggerValue = controlNode.getPersistentData().getDouble(triggerKey);
-            if (triggerValue > 0.0D) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } else {
+    public static boolean getTriggerFromControlNode(
+            BlockEntity controlNode,
+            Level level,
+            double channel
+    ) {
+        if (level.isClientSide() || controlNode == null) {
             return false;
         }
+
+        int channelIndex = (int) channel;
+        CompoundTag data = controlNode.getPersistentData();
+        String triggerKey = "Trigger" + channelIndex;
+
+        boolean triggered = data.getDouble(triggerKey) > 0.0D;
+
+        if (triggered) {
+            data.putDouble(triggerKey, 0.0D);
+            controlNode.setChanged();
+        }
+
+        return triggered;
     }
 
 

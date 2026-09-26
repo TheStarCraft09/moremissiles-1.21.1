@@ -54,7 +54,7 @@ Addon for Warium that adds more missiles and missile hardpoints to the game.
 [[dependencies.${mod_id}]]
     modId="wariumce"
     type="required"
-    versionRange="[1.0.2,)"
+    versionRange="[1.0.3,)"
     ordering="AFTER"
     side="BOTH"
 

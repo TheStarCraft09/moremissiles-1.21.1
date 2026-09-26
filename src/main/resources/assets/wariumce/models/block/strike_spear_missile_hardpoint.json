@@ -1,0 +1,10 @@
+{
+  "parent": "wariumce:custom/hardpointfilled3",
+  "textures": {
+    "all": "wariumce:block/aluminumcasing",
+    "particle": "wariumce:block/aluminumcasing",
+    "0": "wariumce:block/hardpoint",
+    "1": "more_missiles:block/strike_spear_missile"
+  },
+  "render_type": "cutout"
+}

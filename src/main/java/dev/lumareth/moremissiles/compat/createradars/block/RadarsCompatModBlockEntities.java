@@ -11,10 +11,14 @@ public class RadarsCompatModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, WariumBetterMissiles.MOD_ID);
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> RADAR_CONTROL_NODE =
-            BLOCK_ENTITIES.register("radar_control_node",
-                    () -> BlockEntityType.Builder.of(
-                            RadarControlNodeBlockEntity::new,
-                            RadarsCompatModBlocks.RADAR_CONTROL_NODE.get()
-                    ).build(null));
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<RadarControlNodeBlockEntity>
+            > RADAR_CONTROL_NODE = BLOCK_ENTITIES.register(
+            "radar_control_node",
+            () -> BlockEntityType.Builder.of(
+                    RadarControlNodeBlockEntity::new,
+                    RadarsCompatModBlocks.RADAR_CONTROL_NODE.get()
+            ).build(null)
+    );
 }
