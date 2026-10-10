@@ -5,6 +5,7 @@ import dev.lumareth.moremissiles.block.ModBlocks;
 import dev.lumareth.moremissiles.compat.createradars.CreateRadarsCompat;
 import dev.lumareth.moremissiles.item.ModCreativeModeTabs;
 import dev.lumareth.moremissiles.item.ModItems;
+import dev.lumareth.moremissiles.network.ModNetworking;
 import dev.lumareth.moremissiles.utils.ModDataComponents;
 import org.slf4j.Logger;
 
@@ -30,6 +31,7 @@ public class WariumBetterMissiles {
 
     public WariumBetterMissiles(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(ModNetworking::register);
 
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);

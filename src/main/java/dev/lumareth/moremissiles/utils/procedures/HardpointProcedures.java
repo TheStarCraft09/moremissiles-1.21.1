@@ -1,7 +1,6 @@
 package dev.lumareth.moremissiles.utils.procedures;
 
 import com.wariumce.init.CrustyChunksModItems;
-import dev.lumareth.moremissiles.WariumBetterMissiles;
 import dev.lumareth.moremissiles.block.records.ControllerTargetData;
 import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
@@ -9,8 +8,8 @@ import com.wariumce.entity.RadarSpearMissileProjectileEntity;
 import com.wariumce.entity.SeekerSpearMissileProjectileEntity;
 import com.wariumce.entity.StrikeSpearProjectileEntity;
 import com.wariumce.init.CrustyChunksModEntities;
+import dev.lumareth.moremissiles.item.ModItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,12 +54,30 @@ public class HardpointProcedures {
 
     }
 
-
-
+    //default return if for some reason the above breaks
     return Missiletype.EMPTY;
     }
 
+    public static Missiletype reloadHunter(Missiletype currentMissileType, LivingEntity entity, InteractionHand interactionHand) {
+        if (interactionHand != InteractionHand.MAIN_HAND) {
+            return currentMissileType;}
+        if (currentMissileType == Missiletype.EMPTY && entity.getItemInHand(interactionHand).is(ModItems.HUNTER_MISSILE.get())) {
+            entity.setItemInHand(interactionHand, ItemStack.EMPTY);
+            return Missiletype.HUNTER;
+        } else if(currentMissileType == Missiletype.HUNTER && entity.getItemInHand(interactionHand).isEmpty()) {
+            entity.setItemInHand(interactionHand, new ItemStack(ModItems.HUNTER_MISSILE.get()));
+            return Missiletype.EMPTY;
+        } else {
+            return currentMissileType;
+        }
 
+    }
+
+    public static void fireHunterSpear(Level level, BlockPos worldPosition, HardpointType hardpointType, Vec3 launchDirection) {
+        // Implement the logic to fire the Hunter Spear
+    }
+
+    @Deprecated
     public static void fireMissile(Level level, BlockPos hardpointPos, HardpointType state, Vec3 facing, Missiletype missiletype) {
         if (missiletype == Missiletype.IR) {
             fireSeekerSpear(level, hardpointPos, state, facing);
@@ -78,6 +95,8 @@ public class HardpointProcedures {
             return new ItemStack(CrustyChunksModItems.RADAR_SPEAR_MISSILE.get());
         } else if (missiletype == Missiletype.SACLOCS) {
             return new ItemStack(CrustyChunksModItems.STRIKE_SPEAR_MISSILE.get());
+        } else if (missiletype == Missiletype.HUNTER) {
+            return new ItemStack(ModItems.HUNTER_MISSILE.get());
         }
          else {
 
@@ -90,7 +109,6 @@ public class HardpointProcedures {
             if (controleNodeBlockEntity != null) {
                 Vec3 targetPos = Vec3.ZERO;
                 Vec3 targetVelocity = Vec3.ZERO;
-                WariumBetterMissiles.LOGGER.debug("Getting target data from control node");
                 BlockEntity bE = controleNodeBlockEntity;
                 double TargetX = bE.getPersistentData().getDouble("TargetX" + target);
                 double TargetY = bE.getPersistentData().getDouble("TargetY" + target);
@@ -100,7 +118,6 @@ public class HardpointProcedures {
                 double VelocityY = bE.getPersistentData().getDouble("TMY" + target);
                 double VelocityZ = bE.getPersistentData().getDouble("TMZ" + target);
                 targetVelocity = new Vec3(VelocityX, VelocityY, VelocityZ);
-                WariumBetterMissiles.LOGGER.debug("Target Position: {}, Target Velocity: {}", targetPos, targetVelocity);
                 return new ControllerTargetData(targetPos, targetVelocity);
             } else {
                 return new ControllerTargetData(Vec3.ZERO, Vec3.ZERO);
@@ -112,6 +129,10 @@ public class HardpointProcedures {
 
 
 
+    /**
+     * Reads "Trigger" + channel (e.g. "Trigger1.0") like WariumCE does. The control block owns the trigger and
+     * resets it itself, so this only reads; callers fire on the rising edge.
+     */
     public static boolean getTriggerFromControlNode(
             BlockEntity controlNode,
             Level level,
@@ -121,18 +142,7 @@ public class HardpointProcedures {
             return false;
         }
 
-        int channelIndex = (int) channel;
-        CompoundTag data = controlNode.getPersistentData();
-        String triggerKey = "Trigger" + channelIndex;
-
-        boolean triggered = data.getDouble(triggerKey) > 0.0D;
-
-        if (triggered) {
-            data.putDouble(triggerKey, 0.0D);
-            controlNode.setChanged();
-        }
-
-        return triggered;
+        return controlNode.getPersistentData().getDouble("Trigger" + channel) > 0.0D;
     }
 
 

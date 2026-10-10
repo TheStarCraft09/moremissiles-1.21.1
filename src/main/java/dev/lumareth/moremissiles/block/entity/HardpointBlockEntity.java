@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -24,12 +25,17 @@ public class HardpointBlockEntity extends BlockEntity {
     private Vec3 TargetPos;
     private Vec3 TargetVelocity;
     private boolean Trigger = false;
+    private boolean wasControlTriggered = false;
     private double currentTarget = 0D;
     private double channel = 0D;
     private boolean was_powered = false;
 
+    protected HardpointBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+        super(type, pos, blockState);
+    }
+
     public HardpointBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.WING_HARDPOINT.get(), pos, blockState);
+        this(ModBlockEntities.WING_HARDPOINT.get(), pos, blockState);
     }
 
     @Override
@@ -94,7 +100,10 @@ public class HardpointBlockEntity extends BlockEntity {
         data.putDouble("MZ", TargetVelocity.z);
         setChanged();
 
-        if (Trigger) {
+        // One missile per trigger press: the control node holds the trigger for several ticks
+        boolean risingEdge = Trigger && !wasControlTriggered;
+        wasControlTriggered = Trigger;
+        if (risingEdge) {
             if (this.getBlockState().getValue(MISSILE_TYPE) != Missiletype.EMPTY) {
                 fireMissile();
             } else {

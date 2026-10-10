@@ -14,7 +14,9 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, WariumBetterMissiles.MOD_ID);
 
     public static final DeferredHolder<Item, Item> RADAR_TOOLKIT = ITEMS.register("radar_toolkit", () -> new RadarToolkitItem(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> HUNTER_MISSILE = ITEMS.register("hunter_missile", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> DARK_WING_HARDPOINT = ITEMS.register("dark_wing_hardpoint", () -> new BlockItem(ModBlocks.DARK_WING_HARDPOINT.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> WING_HARDPOINT = ITEMS.register("wing_hardpoint", () -> new BlockItem(ModBlocks.WING_HARDPOINT.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> EMPTY_WINGTIP_MISSILE_HARDPOINT = ITEMS.register("empty_wingtip_missile_hardpoint", () -> new BlockItem(ModBlocks.EMPTY_WINGTIP_MISSILE_HARDPOINT.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> EXTERNAL_HUNTER_MISSILE_HARDPOINT = ITEMS.register("external_hunter_spear_missile_hardpoint", () -> new BlockItem(ModBlocks.EXTERNAL_HUNTER_MISSILE_HARDPOINT.get(), new Item.Properties()));
 }

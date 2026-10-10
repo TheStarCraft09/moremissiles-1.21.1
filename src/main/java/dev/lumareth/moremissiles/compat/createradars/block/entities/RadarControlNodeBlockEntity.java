@@ -3,49 +3,52 @@ package dev.lumareth.moremissiles.compat.createradars.block.entities;
 import com.happysg.radar.block.radar.behavior.IRadar;
 import com.happysg.radar.block.radar.track.RadarTrack;
 import com.happysg.radar.block.radar.track.TrackCategory;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import dev.lumareth.moremissiles.WariumBetterMissiles;
 import dev.lumareth.moremissiles.compat.createradars.block.RadarsCompatModBlockEntities;
-import dev.lumareth.moremissiles.compat.createradars.utils.RedstoneReceiverBehaviour;
+import dev.lumareth.moremissiles.compat.createradars.utils.RcnLinkReceiver;
+import dev.lumareth.moremissiles.network.RadarLockPayload;
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.tuple.Pair;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bridges a Create Radar to WariumCE-style hardpoints. All values in the persistent data use WariumCE's
+ * format: doubles, with keys built from doubles ("TargetX2.0", "Trigger1.0").
+ */
 public class RadarControlNodeBlockEntity extends SmartBlockEntity {
-    protected BlockPos radarPos;
-    private boolean hasLock = false;
-    private int lockedTargetIDX = 0;
-    private String lockedTargetId = "";
-    boolean wasSelected = false;
+    public static final int MAX_CHANNEL = 15;
+    private static final int TRIGGER_PULSE_TICKS = 2;
+    private static final double NO_TARGET = -1D;
+    private static final double FEEDBACK_RANGE = 32D;
 
-    public static final BehaviourType<RedstoneReceiverBehaviour> CHANNEL_UP = new BehaviourType<>();
-    public static final BehaviourType<RedstoneReceiverBehaviour> CHANNEL_DOWN = new BehaviourType<>();
-    public static final BehaviourType<RedstoneReceiverBehaviour> TRIGGER = new BehaviourType<>();
-    public static final BehaviourType<RedstoneReceiverBehaviour> TARGET_UP = new BehaviourType<>();
-    public static final BehaviourType<RedstoneReceiverBehaviour> TARGET_DOWN = new BehaviourType<>();
+    public static final BehaviourType<RcnLinkReceiver> CHANNEL_UP = new BehaviourType<>();
+    public static final BehaviourType<RcnLinkReceiver> CHANNEL_DOWN = new BehaviourType<>();
+    public static final BehaviourType<RcnLinkReceiver> TRIGGER = new BehaviourType<>();
+    public static final BehaviourType<RcnLinkReceiver> TARGET_UP = new BehaviourType<>();
+    public static final BehaviourType<RcnLinkReceiver> TARGET_DOWN = new BehaviourType<>();
 
-    private RedstoneReceiverBehaviour channelUpBehaviour;
-    private RedstoneReceiverBehaviour channelDownBehaviour;
-    private RedstoneReceiverBehaviour triggerBehaviour;
-    private RedstoneReceiverBehaviour targetUpBehaviour;
-    private RedstoneReceiverBehaviour targetDownBehaviour;
+    private RcnLinkReceiver channelUpLink;
+    private RcnLinkReceiver channelDownLink;
+    private RcnLinkReceiver triggerLink;
+    private RcnLinkReceiver targetUpLink;
+    private RcnLinkReceiver targetDownLink;
 
     private boolean wasChannelUpPowered = false;
     private boolean wasChannelDownPowered = false;
@@ -53,278 +56,320 @@ public class RadarControlNodeBlockEntity extends SmartBlockEntity {
     private boolean wasTargetUpPowered = false;
     private boolean wasTargetDownPowered = false;
 
+    private String lockedTargetId = "";
+    private int triggerTicks = 0;
+    private double triggerChannel = 0D;
+
     public RadarControlNodeBlockEntity(BlockPos pos, BlockState state) {
         super(RadarsCompatModBlockEntities.RADAR_CONTROL_NODE.get(), pos, state);
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        CompoundTag data = this.getPersistentData();
-        if (!data.contains("Channel")) {
-            data.putDouble("Channel", 0D);
-        }
-        int channel = (int) data.getDouble("Channel");
-        if (!data.contains("RadarX") || !data.contains("RadarY") || !data.contains("RadarZ")) {
-            return;
-        }
-        double radarX = data.getDouble("RadarX");
-        double radarY = data.getDouble("RadarY");
-        double radarZ = data.getDouble("RadarZ");
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        // Frequencies are hardcoded for now
+        channelUpLink = new RcnLinkReceiver(this, CHANNEL_UP, "ChannelUp", frequency(Items.REDSTONE_BLOCK), frequency(Items.COBBLESTONE));
+        channelDownLink = new RcnLinkReceiver(this, CHANNEL_DOWN, "ChannelDown", frequency(Items.REDSTONE_BLOCK), frequency(Items.STONE));
+        triggerLink = new RcnLinkReceiver(this, TRIGGER, "Trigger", frequency(Items.REDSTONE_BLOCK), frequency(Items.IRON_INGOT));
+        targetUpLink = new RcnLinkReceiver(this, TARGET_UP, "TargetUp", frequency(Items.REDSTONE_BLOCK), frequency(Items.GOLD_INGOT));
+        targetDownLink = new RcnLinkReceiver(this, TARGET_DOWN, "TargetDown", frequency(Items.REDSTONE_BLOCK), frequency(Items.DIAMOND));
 
-        WariumBetterMissiles.LOGGER.debug("Radar position: {}, {}, {}", radarX, radarY, radarZ);
-        radarPos = BlockPos.containing(radarX, radarY, radarZ);
-        assert level != null;
-        if (!level.isClientSide()){
-            if (radarPos != null && level.getBlockEntity(radarPos) instanceof IRadar radar) {
-                    List<RadarTrack> tracks = radar.getTracks().stream().filter(t -> t.trackCategory() == TrackCategory.SABLE).toList();
-                    WariumBetterMissiles.LOGGER.debug("Radar tracks: {}", tracks);
-                if (tracks.isEmpty()) {
-                    clearLock(data, channel);
-                } else if (hasLock) {
-                    updateLockedTarget(data, channel, tracks);
-                } else {
-                    clearTargetData(data, channel);
-                }
-
-            }
-        }
-        this.setChanged();
+        behaviours.add(channelUpLink);
+        behaviours.add(channelDownLink);
+        behaviours.add(triggerLink);
+        behaviours.add(targetUpLink);
+        behaviours.add(targetDownLink);
     }
 
-    private void updateLockedTarget(
-            CompoundTag date,
-            int channel,
-            List<RadarTrack> tracks
-    ) {
-        RadarTrack lockedTrack = null;
-        int currentIDX = -1;
-
-        for (int i = 0; i < tracks.size(); i++) {
-            RadarTrack track = tracks.get(i);
-            if (track.getId().equals(lockedTargetId)) {
-                lockedTrack = track;
-                currentIDX = i;
-                break;
-            }
-        }
-        if (lockedTrack == null) {
-            clearLock(date, channel);
-            return;
-        }
-        lockedTargetIDX = currentIDX;
-        date.putDouble("SelectedTarget", lockedTargetIDX);
-        writeToNBT(date, channel, lockedTrack);
-    }
-
-    private void clearLock(CompoundTag data, int channel) {
-        hasLock = false;
-        lockedTargetId = "";
-        lockedTargetIDX = 0;
-
-        data.putDouble("SelectedTarget", -1);
-        clearTargetData(data, channel);
-    }
-
-    private void clearTargetData(CompoundTag data, int channel) {
-        data.putDouble("TargetX" + channel, 0D);
-        data.putDouble("TargetY" + channel, 0D);
-        data.putDouble("TargetZ" + channel, 0D);
-        data.putDouble("TMX" + channel, 0D);
-        data.putDouble("TMY" + channel, 0D);
-        data.putDouble("TMZ" + channel, 0D);
-        data.putDouble("Trigger" + channel, 0D);
-    }
-
-    private void changeTargetIDX(int change, List<RadarTrack> tracks){
-        if (tracks.isEmpty()) {
-            lockedTargetIDX = 0;
-            return;
-        }
-
-        lockedTargetIDX += change;
-        if (lockedTargetIDX >= tracks.size()) {
-            lockedTargetIDX = 0;
-        } else if (lockedTargetIDX < 0) {
-            lockedTargetIDX = tracks.size() -1;
-        }
-    }
-
-    private void writeToNBT(
-            CompoundTag data,
-            int channel,
-            RadarTrack track
-    ) {
-        data.putDouble("TargetX" + channel, track.getPosition().x);
-        data.putDouble("TargetY" + channel, track.getPosition().y);
-        data.putDouble("TargetZ" + channel, track.getPosition().z);
-
-        data.putDouble("TMX" + channel, track.getVelocity().x);
-        data.putDouble("TMY" + channel, track.getVelocity().y);
-        data.putDouble("TMZ" + channel, track.getVelocity().z);
-
-        data.putDouble("Trigger" + channel, 0D);
-    }
-
-    @Override
-    public void addBehavioursDeferred(List<BlockEntityBehaviour> behaviours) {
-        Pair<ValueBoxTransform, ValueBoxTransform> dummySlots = ValueBoxTransform.Dual.makeSlots(DummyDualTransform::new);
-
-        this.channelUpBehaviour = new RedstoneReceiverBehaviour(this, dummySlots, this::onChannelUpSignal, CHANNEL_UP);
-        this.channelDownBehaviour = new RedstoneReceiverBehaviour(this, dummySlots, this::onChannelDownSignal, CHANNEL_DOWN);
-        this.triggerBehaviour = new RedstoneReceiverBehaviour(this, dummySlots, this::onTriggerSignal, TRIGGER);
-        this.targetUpBehaviour = new RedstoneReceiverBehaviour(this, dummySlots, this::onTargetUpSignal, TARGET_UP);
-        this.targetDownBehaviour = new RedstoneReceiverBehaviour(this, dummySlots, this::onTargetDownSignal, TARGET_DOWN);
-
-        channelUpBehaviour.setFrequency(true, frequency(Items.REDSTONE));
-        channelUpBehaviour.setFrequency(false, frequency(Items.COBBLESTONE));
-
-        channelDownBehaviour.setFrequency(true, frequency(Items.REDSTONE));
-        channelDownBehaviour.setFrequency(false, frequency(Items.STONE));
-
-        triggerBehaviour.setFrequency(true, frequency(Items.REDSTONE));
-        triggerBehaviour.setFrequency(false, frequency(Items.IRON_INGOT));
-
-        targetUpBehaviour.setFrequency(true, frequency(Items.REDSTONE));
-        targetUpBehaviour.setFrequency(false, frequency(Items.GOLD_INGOT));
-
-        targetDownBehaviour.setFrequency(true, frequency(Items.REDSTONE));
-        targetDownBehaviour.setFrequency(false, frequency(Items.DIAMOND));
-
-        behaviours.add(channelUpBehaviour);
-        behaviours.add(channelDownBehaviour);
-        behaviours.add(triggerBehaviour);
-        behaviours.add(targetUpBehaviour);
-        behaviours.add(targetDownBehaviour);
-
-        WariumBetterMissiles.LOGGER.debug("RadarControlNode Behaviors: {}", behaviours.size());
-    }
     private static ItemStack frequency(Item item) {
         return new ItemStack(item);
     }
 
-    private void onChannelUpSignal(int pwr) {
-        if (pwr > 0 && !wasChannelUpPowered) {
-            debugMessage("Channel up received");
-            double channel = this.getPersistentData().getDouble("Channel");
-            channel++;
-            if(channel >15){
-                channel = 0;
-            }
-            this.getPersistentData().putDouble("Channel", channel);
-            wasChannelUpPowered = pwr > 0;
-        }else if (pwr <= 0) {
-            wasChannelUpPowered = false;
-        }
-    }
-    private void onChannelDownSignal(int pwr) {
-        if (pwr > 0 && !wasChannelDownPowered) {
-            debugMessage("Channel Down received");
-            double channel = this.getPersistentData().getDouble("Channel");
-            channel--;
-            if(channel < 0){
-                channel = 15;
-            }
-            this.getPersistentData().putDouble("Channel", channel);
-            wasChannelDownPowered = pwr > 0;
-        }else if (pwr <= 0) {
-            wasChannelDownPowered = false;
-        }
-    }
-
-    private void onTriggerSignal(int pwr) {
-        if (pwr > 0 && !wasTriggerPowered) {
-            debugMessage("Trigger received");
-            double channel = this.getPersistentData().getDouble("Channel");
-            String triggerKey = "Trigger" + channel;
-            this.getPersistentData().putDouble(triggerKey, 1D);
-            wasTriggerPowered = pwr > 0;
-        }
-         else if (pwr <= 0) {
-            wasTriggerPowered = false;
-        }
-    }
-
-    private void onTargetUpSignal(int pwr) {
-        if (pwr > 0 && !wasTargetUpPowered) {
-            debugMessage("Target up received");
-            if (radarPos != null && level.getBlockEntity(radarPos) instanceof IRadar radar) {
-                List<RadarTrack> tracks = radar.getTracks().stream().filter(t -> t.trackCategory() == TrackCategory.SABLE).toList();
-                if (!tracks.isEmpty()){
-                    changeTargetIDX(1, tracks);
-                    RadarTrack selectedTrack = tracks.get(lockedTargetIDX);
-                    lockedTargetId = selectedTrack.getId();
-                    hasLock = true;
-
-                    CompoundTag data = this.getPersistentData();
-                    int channel = (int) data.getDouble("Channel");
-                    writeToNBT(data, channel, selectedTrack);
-                    setChanged();
-                }
-            }
-            wasTargetUpPowered = pwr > 0;
-        } else if (pwr <= 0) {
-            wasTargetUpPowered = false;
-        }
-        }
-    private void onTargetDownSignal(int pwr) {
-    if (pwr > 0 && !wasTargetDownPowered) {
-        debugMessage("Target down received");
-        if (radarPos != null && level.getBlockEntity(radarPos) instanceof IRadar radar) {
-            List<RadarTrack> tracks = radar.getTracks().stream()
-                    .filter(t -> t.trackCategory() == TrackCategory.SABLE)
-                    .toList();
-
-            if (!tracks.isEmpty()) {
-                changeTargetIDX(-1, tracks);
-
-                RadarTrack selectedTrack = tracks.get(lockedTargetIDX);
-                lockedTargetId = selectedTrack.getId();
-                hasLock = true;
-
-                CompoundTag data = getPersistentData();
-                int channel = (int) data.getDouble("Channel");
-                data.putInt("SelectedTarget", lockedTargetIDX);
-                writeToNBT(data, channel, selectedTrack);
-                setChanged();
-            }
-        }
-
-        wasTargetDownPowered = true;
-    } else if (pwr <= 0) {
-        wasTargetDownPowered = false;
-    }
-}
-    private void debugMessage(String message) {
+    @Override
+    public void tick() {
+        super.tick();
         if (level == null || level.isClientSide()) {
             return;
         }
+        CompoundTag data = this.getPersistentData();
+        boolean changed = tickTriggerPulse(data);
 
-        for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
-            player.sendSystemMessage(
-                    Component.literal("[RCN] " + message)
-            );
+        boolean channelUp = risingEdge(channelUpLink, wasChannelUpPowered);
+        wasChannelUpPowered = channelUpLink.isPowered();
+        boolean channelDown = risingEdge(channelDownLink, wasChannelDownPowered);
+        wasChannelDownPowered = channelDownLink.isPowered();
+        boolean trigger = risingEdge(triggerLink, wasTriggerPowered);
+        wasTriggerPowered = triggerLink.isPowered();
+        boolean targetUp = risingEdge(targetUpLink, wasTargetUpPowered);
+        wasTargetUpPowered = targetUpLink.isPowered();
+        boolean targetDown = risingEdge(targetDownLink, wasTargetDownPowered);
+        wasTargetDownPowered = targetDownLink.isPowered();
+
+        if (channelUp) {
+            changed |= changeChannel(data, 1);
+        }
+        if (channelDown) {
+            changed |= changeChannel(data, -1);
+        }
+        if (channelUp || channelDown) {
+            notifyNearby(Component.translatable("message.more_missiles.rcn.channel", (int) data.getDouble("Channel")));
+        }
+
+        List<RadarTrack> tracks = getRadarTracks(data);
+        boolean hadLock = !lockedTargetId.isEmpty();
+        int targetIdx = findLockedTrack(tracks);
+        if (hadLock && targetIdx < 0) {
+            notifyNearby(Component.translatable("message.more_missiles.rcn.target_lost"));
+        }
+        if (targetUp) {
+            targetIdx = cycleTarget(tracks, targetIdx, 1);
+        }
+        if (targetDown) {
+            targetIdx = cycleTarget(tracks, targetIdx, -1);
+        }
+        if (targetUp || targetDown) {
+            notifyNearby(targetIdx < 0
+                    ? noTargetReason(data)
+                    : Component.translatable("message.more_missiles.rcn.target_locked", targetIdx + 1, tracks.size()));
+        }
+        changed |= writeTarget(data, tracks, targetIdx);
+        if (targetIdx >= 0) {
+            RadarLockPayload marker = new RadarLockPayload(worldPosition, tracks.get(targetIdx).getPosition());
+            for (ServerPlayer player : nearbyPlayers()) {
+                PacketDistributor.sendToPlayer(player, marker);
+            }
+        }
+
+        if (trigger) {
+            startTriggerPulse(data);
+            notifyNearby(Component.translatable("message.more_missiles.rcn.fired", (int) triggerChannel));
+            changed = true;
+        }
+
+        if (changed) {
+            setChanged();
+        }
+    }
+
+    private static boolean risingEdge(RcnLinkReceiver link, boolean wasPowered) {
+        return link.isPowered() && !wasPowered;
+    }
+
+    @Nullable
+    private static BlockPos getRadarPos(CompoundTag data) {
+        if (!data.contains("RadarX") || !data.contains("RadarY") || !data.contains("RadarZ")) {
+            return null;
+        }
+        return BlockPos.containing(data.getDouble("RadarX"), data.getDouble("RadarY"), data.getDouble("RadarZ"));
+    }
+
+    @Nullable
+    private IRadar getRadar(CompoundTag data) {
+        BlockPos radarPos = getRadarPos(data);
+        if (radarPos != null && level.getBlockEntity(radarPos) instanceof IRadar radar) {
+            return radar;
+        }
+        return null;
+    }
+
+    private List<RadarTrack> getRadarTracks(CompoundTag data) {
+        IRadar radar = getRadar(data);
+        if (radar == null) {
+            return List.of();
+        }
+        return radar.getTracks().stream().filter(t -> t.trackCategory() == TrackCategory.SABLE).toList();
+    }
+
+    private Component noTargetReason(CompoundTag data) {
+        BlockPos radarPos = getRadarPos(data);
+        if (radarPos == null) {
+            return Component.translatable("message.more_missiles.rcn.no_radar");
+        }
+        if (getRadar(data) == null) {
+            return Component.translatable("message.more_missiles.rcn.radar_missing", radarPos.getX(), radarPos.getY(), radarPos.getZ());
+        }
+        return Component.translatable("message.more_missiles.rcn.no_targets");
+    }
+
+    /**
+     * Players close enough to get feedback from this node. Distance accounts for Sable sub-levels.
+     */
+    private List<ServerPlayer> nearbyPlayers() {
+        Vec3 center = Vec3.atCenterOf(worldPosition);
+        List<ServerPlayer> players = new ArrayList<>();
+        for (Player player : level.players()) {
+            if (player instanceof ServerPlayer serverPlayer
+                    && SableCompanion.INSTANCE.distanceSquaredWithSubLevels(level, center, player.position()) <= FEEDBACK_RANGE * FEEDBACK_RANGE) {
+                players.add(serverPlayer);
+            }
+        }
+        return players;
+    }
+
+    private void notifyNearby(Component message) {
+        for (ServerPlayer player : nearbyPlayers()) {
+            player.displayClientMessage(message, true);
+        }
+    }
+
+    public void showStatus(Player player) {
+        CompoundTag data = this.getPersistentData();
+        List<RadarTrack> tracks = getRadarTracks(data);
+        BlockPos radarPos = getRadarPos(data);
+        int targetIdx = findLockedTrack(tracks);
+
+        player.sendSystemMessage(Component.translatable("message.more_missiles.rcn.status.header"));
+        player.sendSystemMessage(getRadar(data) != null
+                ? Component.translatable("message.more_missiles.rcn.status.radar", radarPos.getX(), radarPos.getY(), radarPos.getZ(), tracks.size())
+                : noTargetReason(data));
+        player.sendSystemMessage(targetIdx < 0
+                ? Component.translatable("message.more_missiles.rcn.status.no_lock")
+                : Component.translatable("message.more_missiles.rcn.status.lock", targetIdx + 1, tracks.size()));
+        player.sendSystemMessage(Component.translatable("message.more_missiles.rcn.channel", (int) data.getDouble("Channel")));
+        player.sendSystemMessage(Component.translatable("message.more_missiles.rcn.status.inputs",
+                channelUpLink.getReceivedStrength(), channelDownLink.getReceivedStrength(), triggerLink.getReceivedStrength(),
+                targetUpLink.getReceivedStrength(), targetDownLink.getReceivedStrength()));
+    }
+
+    /**
+     * @return the index of the locked track, or -1 (and the lock is dropped) if it is no longer tracked
+     */
+    private int findLockedTrack(List<RadarTrack> tracks) {
+        if (lockedTargetId.isEmpty()) {
+            return -1;
+        }
+        for (int i = 0; i < tracks.size(); i++) {
+            if (tracks.get(i).getId().equals(lockedTargetId)) {
+                return i;
+            }
+        }
+        WariumBetterMissiles.LOGGER.debug("RCN at {} lost target {}", worldPosition, lockedTargetId);
+        lockedTargetId = "";
+        return -1;
+    }
+
+    private int cycleTarget(List<RadarTrack> tracks, int currentIdx, int direction) {
+        if (tracks.isEmpty()) {
+            return currentIdx;
+        }
+        int nextIdx;
+        if (currentIdx < 0) {
+            nextIdx = direction > 0 ? 0 : tracks.size() - 1;
+        } else {
+            nextIdx = Math.floorMod(currentIdx + direction, tracks.size());
+        }
+        lockedTargetId = tracks.get(nextIdx).getId();
+        WariumBetterMissiles.LOGGER.debug("RCN at {} locked target {} ({})", worldPosition, nextIdx, lockedTargetId);
+        return nextIdx;
+    }
+
+    /**
+     * Writes the locked track under "TargetX" + SelectedTarget etc., the way WariumCE hardpoints read it.
+     * Keys of a previously selected index are removed so hardpoints never read a stale target.
+     */
+    private boolean writeTarget(CompoundTag data, List<RadarTrack> tracks, int targetIdx) {
+        boolean changed = false;
+        double selected = targetIdx < 0 ? NO_TARGET : targetIdx;
+        double previous = data.contains("SelectedTarget") ? data.getDouble("SelectedTarget") : NO_TARGET;
+
+        if (!data.contains("SelectedTarget") || previous != selected) {
+            if (previous != NO_TARGET) {
+                removeTargetKeys(data, previous);
+            }
+            data.putDouble("SelectedTarget", selected);
+            changed = true;
+        }
+
+        if (targetIdx >= 0) {
+            RadarTrack track = tracks.get(targetIdx);
+            data.putDouble("TargetX" + selected, track.getPosition().x);
+            data.putDouble("TargetY" + selected, track.getPosition().y);
+            data.putDouble("TargetZ" + selected, track.getPosition().z);
+            data.putDouble("TMX" + selected, track.getVelocity().x);
+            data.putDouble("TMY" + selected, track.getVelocity().y);
+            data.putDouble("TMZ" + selected, track.getVelocity().z);
+            changed = true;
+        }
+        return changed;
+    }
+
+    private static void removeTargetKeys(CompoundTag data, double index) {
+        data.remove("TargetX" + index);
+        data.remove("TargetY" + index);
+        data.remove("TargetZ" + index);
+        data.remove("TMX" + index);
+        data.remove("TMY" + index);
+        data.remove("TMZ" + index);
+    }
+
+    private boolean changeChannel(CompoundTag data, int direction) {
+        // A running pulse must not stay stuck on the channel we are leaving
+        stopTriggerPulse(data);
+        double channel = Math.floorMod((int) data.getDouble("Channel") + direction, MAX_CHANNEL + 1);
+        data.putDouble("Channel", channel);
+        WariumBetterMissiles.LOGGER.debug("RCN at {} switched to channel {}", worldPosition, channel);
+        return true;
+    }
+
+    /**
+     * WariumCE hardpoints never reset the control block's trigger, so the RCN sends a short pulse and clears it
+     * itself. The pulse lasts two full ticks, so every hardpoint sees it regardless of block entity tick order.
+     */
+    private void startTriggerPulse(CompoundTag data) {
+        stopTriggerPulse(data);
+        triggerChannel = data.getDouble("Channel");
+        triggerTicks = TRIGGER_PULSE_TICKS;
+        data.putDouble("Trigger" + triggerChannel, 1D);
+        WariumBetterMissiles.LOGGER.debug("RCN at {} triggered channel {}", worldPosition, triggerChannel);
+    }
+
+    private boolean tickTriggerPulse(CompoundTag data) {
+        if (triggerTicks <= 0) {
+            return false;
+        }
+        triggerTicks--;
+        if (triggerTicks == 0) {
+            data.putDouble("Trigger" + triggerChannel, 0D);
+        }
+        return true;
+    }
+
+    private void stopTriggerPulse(CompoundTag data) {
+        if (triggerTicks > 0) {
+            data.putDouble("Trigger" + triggerChannel, 0D);
+            triggerTicks = 0;
         }
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> list) {}
-
-    private static class DummyDualTransform extends ValueBoxTransform.Dual {
-
-        public DummyDualTransform(boolean first) {
-            super(first);
+    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
+        if (clientPacket) {
+            return;
         }
-
-        @Override
-        public Vec3 getLocalOffset(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
-            return null;
-        }
-
-        @Override
-        public void rotate(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState, PoseStack poseStack) {
-
-        }
+        tag.putString("LockedTargetId", lockedTargetId);
+        tag.putInt("TriggerTicks", triggerTicks);
+        tag.putDouble("TriggerChannel", triggerChannel);
+        // Saved so a link that is still powered after a reload doesn't count as a new press
+        tag.putBoolean("WasChannelUpPowered", wasChannelUpPowered);
+        tag.putBoolean("WasChannelDownPowered", wasChannelDownPowered);
+        tag.putBoolean("WasTriggerPowered", wasTriggerPowered);
+        tag.putBoolean("WasTargetUpPowered", wasTargetUpPowered);
+        tag.putBoolean("WasTargetDownPowered", wasTargetDownPowered);
     }
 
+    @Override
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
+        if (clientPacket) {
+            return;
+        }
+        lockedTargetId = tag.getString("LockedTargetId");
+        triggerTicks = tag.getInt("TriggerTicks");
+        triggerChannel = tag.getDouble("TriggerChannel");
+        wasChannelUpPowered = tag.getBoolean("WasChannelUpPowered");
+        wasChannelDownPowered = tag.getBoolean("WasChannelDownPowered");
+        wasTriggerPowered = tag.getBoolean("WasTriggerPowered");
+        wasTargetUpPowered = tag.getBoolean("WasTargetUpPowered");
+        wasTargetDownPowered = tag.getBoolean("WasTargetDownPowered");
+    }
 }

@@ -2,6 +2,7 @@ package dev.lumareth.moremissiles.block;
 
 import dev.lumareth.moremissiles.WariumBetterMissiles;
 import dev.lumareth.moremissiles.block.entity.HardpointBlockEntity;
+import dev.lumareth.moremissiles.block.entity.HunterHardpointBlockEntity;
 import dev.lumareth.moremissiles.block.entity.WingtipHardpointBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,5 +26,11 @@ public class ModBlockEntities {
                             HardpointBlockEntity::new,
                             ModBlocks.WING_HARDPOINT.get(),
                             ModBlocks.DARK_WING_HARDPOINT.get()
+                    ).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HunterHardpointBlockEntity>> HUNTER_HARDPOINT =
+            BLOCK_ENTITIES.register("hunter_hardpoint",
+                    () -> BlockEntityType.Builder.of(
+                            HunterHardpointBlockEntity::new,
+                            ModBlocks.EXTERNAL_HUNTER_MISSILE_HARDPOINT.get()
                     ).build(null));
 }

@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "facing=north,hardpoint_type=external,missile_type=empty": {
+      "model": "more_missiles:block/external_hunter_spear_missile_hardpoint",
+      "y": 0
+    },
+    "facing=east,hardpoint_type=external,missile_type=empty": {
+      "model": "more_missiles:block/external_hunter_spear_missile_hardpoint",
+      "y": 90
+    },
+    "facing=south,hardpoint_type=external,missile_type=empty": {
+      "model": "more_missiles:block/external_hunter_spear_missile_hardpoint",
+      "y": 180
+    },
+    "facing=west,hardpoint_type=external,missile_type=empty": {
+      "model": "more_missiles:block/external_hunter_spear_missile_hardpoint",
+      "y": 270
+    },
+    "facing=north,hardpoint_type=external,missile_type=hunter": {
+      "model": "more_missiles:block/loaded_external_hunter_spear_missile_hardpoint",
+      "y": 0
+    },
+    "facing=east,hardpoint_type=external,missile_type=hunter": {
+      "model": "more_missiles:block/loaded_external_hunter_spear_missile_hardpoint",
+      "y": 90
+    },
+    "facing=south,hardpoint_type=external,missile_type=hunter": {
+      "model": "more_missiles:block/loaded_external_hunter_spear_missile_hardpoint",
+      "y": 180
+    },
+    "facing=west,hardpoint_type=external,missile_type=hunter": {
+      "model": "more_missiles:block/loaded_external_hunter_spear_missile_hardpoint",
+      "y": 270
+    }
+  }
+}

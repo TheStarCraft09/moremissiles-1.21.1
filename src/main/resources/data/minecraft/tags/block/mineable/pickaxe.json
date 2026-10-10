@@ -1,0 +1,8 @@
+{
+  "values": [
+    {
+      "id": "more_missiles:radar_control_node",
+      "required": false
+    }
+  ]
+}

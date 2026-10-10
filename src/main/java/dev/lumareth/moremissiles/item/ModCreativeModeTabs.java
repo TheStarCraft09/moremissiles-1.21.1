@@ -21,6 +21,8 @@ public class ModCreativeModeTabs {
             output.accept(ModItems.WING_HARDPOINT.get());
             output.accept(ModItems.DARK_WING_HARDPOINT.get());
             output.accept(ModItems.RADAR_TOOLKIT.get());
+            output.accept(ModItems.HUNTER_MISSILE.get());
+            output.accept(ModItems.EXTERNAL_HUNTER_MISSILE_HARDPOINT.get());
             if ((ModList.get().isLoaded("create") && ModList.get().isLoaded("create_radar"))) {
                 output.accept(RadarsCompatModItems.RADAR_CONTROL_NODE.get());
             }

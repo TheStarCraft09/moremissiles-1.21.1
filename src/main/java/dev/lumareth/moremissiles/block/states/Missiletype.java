@@ -7,6 +7,7 @@ public enum Missiletype implements StringRepresentable {
     EMPTY("empty"),
     IR("ir"),
     SARH("sarh"),
+    HUNTER("hunter"),
     SACLOCS("saclocs");
 
     private final String name;

@@ -6,6 +6,7 @@ public enum HardpointType implements StringRepresentable {
     TOP("top"),
     BOTTOM("bottom"),
     WING("wing"),
+    EXTERNAL("external"),
     INTERNAL("internal");
 
     private final String name;

@@ -26,6 +26,7 @@ public class WingtipHardpointBlockEntity extends BlockEntity {
     private Vec3 TargetPos;
     private Vec3 TargetVelocity;
     private boolean Trigger = false;
+    private boolean wasControlTriggered = false;
     private double currentTarget = 0D;
     private double channel = 0D;
     private boolean was_powered = false;
@@ -90,10 +91,19 @@ public class WingtipHardpointBlockEntity extends BlockEntity {
         Trigger = HardpointProcedures.getTriggerFromControlNode(controlBlockEntity, level, channel);
         TargetPos = targetData.position();
         TargetVelocity = targetData.velocity();
+        // The Radar Spear reads its target from the launching block
+        data.putDouble("TargetX", TargetPos.x);
+        data.putDouble("TargetY", TargetPos.y);
+        data.putDouble("TargetZ", TargetPos.z);
+        data.putDouble("MX", TargetVelocity.x);
+        data.putDouble("MY", TargetVelocity.y);
+        data.putDouble("MZ", TargetVelocity.z);
         setChanged();
-        Vec3 launchDirection = getLaunchDirection();
 
-        if (Trigger) {
+        // One missile per trigger press: the control node holds the trigger for several ticks
+        boolean risingEdge = Trigger && !wasControlTriggered;
+        wasControlTriggered = Trigger;
+        if (risingEdge) {
             if (this.getBlockState().getValue(MISSILE_TYPE) != Missiletype.EMPTY) {
                 fireMissile();
             } else {
