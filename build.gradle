@@ -102,7 +102,7 @@ configurations {
 }
 
 dependencies {
-    implementation files('libs/wariumce-1.0.3.jar')
+    implementation files('libs/wariumce-1.0.4.jar')
     implementation "maven.modrinth:8BmcQJ2H:tPkJmim6"
     implementation "maven.modrinth:BLu2Yqfq:AntNFNAx"
     implementation "maven.modrinth:LNytGWDc:UjX6dr61"

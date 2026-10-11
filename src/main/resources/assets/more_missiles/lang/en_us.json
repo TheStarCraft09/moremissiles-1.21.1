@@ -23,5 +23,14 @@
   "message.more_missiles.rcn.status.radar": "RCN: Radar at %s %s %s, %s targets",
   "message.more_missiles.rcn.status.lock": "RCN: Target %s of %s locked",
   "message.more_missiles.rcn.status.no_lock": "RCN: No target locked",
-  "message.more_missiles.rcn.status.inputs": "RCN: Link power - Channel+ %s, Channel- %s, Fire %s, Target+ %s, Target- %s"
+  "gui.more_missiles.rcn.next_target": "Next target",
+  "gui.more_missiles.rcn.previous_target": "Previous target",
+  "gui.more_missiles.rcn.fire": "Fire",
+  "gui.more_missiles.rcn.channel_up": "Channel up",
+  "gui.more_missiles.rcn.channel_down": "Channel down",
+  "gui.more_missiles.rcn.first_frequency": "First frequency",
+  "gui.more_missiles.rcn.second_frequency": "Second frequency",
+  "gui.more_missiles.rcn.reset": "Reset to default frequencies",
+  "gui.more_missiles.rcn.done": "Done",
+  "message.more_missiles.rcn.status.inputs":"RCN: Link power - Channel+ %s, Channel- %s, Fire %s, Target+ %s, Target- %s"
 }

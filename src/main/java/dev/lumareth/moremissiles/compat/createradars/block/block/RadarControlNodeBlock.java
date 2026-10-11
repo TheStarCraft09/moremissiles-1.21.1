@@ -56,13 +56,17 @@ public class RadarControlNodeBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        // Only sneak + empty hand shows the status. A normal right-click must PASS so the Radar Toolkit
+        // Also reached by a normal right-click while holding an item. That must PASS so the Radar Toolkit
         // can copy this position; sneaking with an item in hand never reaches this method.
-        if (!player.isShiftKeyDown()) {
+        if (!player.getMainHandItem().isEmpty()) {
             return InteractionResult.PASS;
         }
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof RadarControlNodeBlockEntity radarControlNode) {
-            radarControlNode.showStatus(player);
+            if (player.isShiftKeyDown()) {
+                radarControlNode.showStatus(player);
+            } else {
+                player.openMenu(radarControlNode, buf -> buf.writeBlockPos(pos));
+            }
         }
         return InteractionResult.sidedSuccess(level.isClientSide());
     }

@@ -12,11 +12,13 @@ import dev.lumareth.moremissiles.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 public class HardpointProcedures {
     public static Missiletype reload(Missiletype currentMissileType, LivingEntity entity, InteractionHand interactionHand) {
@@ -181,7 +183,11 @@ public class HardpointProcedures {
         }
     }
 
-    public static void fireRadarSpear(Level level, BlockPos hardpointPos, HardpointType type, Vec3 facing){
+    /**
+     * @return the spawned missile, or null on the client
+     */
+    @Nullable
+    public static Entity fireRadarSpear(Level level, BlockPos hardpointPos, HardpointType type, Vec3 facing){
         if (!level.isClientSide) {
             ServerLevel serverLevel = (ServerLevel) level;
             RadarSpearMissileProjectileEntity missile = new RadarSpearMissileProjectileEntity(CrustyChunksModEntities.RADAR_SPEAR_MISSILE_PROJECTILE.get(), serverLevel);
@@ -202,8 +208,9 @@ public class HardpointProcedures {
 
             missile.shoot(LaunchX, LaunchY, LaunchZ, 4.0F, 0.0F);
             serverLevel.addFreshEntity(missile);
-
+            return missile;
         }
+        return null;
     }
     public static void fireStrikeSpear(Level level, BlockPos hardpointPos, HardpointType type, Vec3 facing){
         if (!level.isClientSide) {

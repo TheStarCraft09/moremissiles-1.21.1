@@ -6,17 +6,21 @@ import dev.lumareth.moremissiles.block.states.HardpointType;
 import dev.lumareth.moremissiles.block.states.Missiletype;
 import dev.lumareth.moremissiles.block.states.ModBlockStates;
 import dev.lumareth.moremissiles.block.block.WingtipHardpointBlock;
+import dev.lumareth.moremissiles.utils.MissileWarningRegistry;
 import dev.lumareth.moremissiles.utils.procedures.HardpointProcedures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import static dev.lumareth.moremissiles.block.states.ModBlockStates.MISSILE_TYPE;
 
@@ -105,7 +109,11 @@ public class HardpointBlockEntity extends BlockEntity {
         wasControlTriggered = Trigger;
         if (risingEdge) {
             if (this.getBlockState().getValue(MISSILE_TYPE) != Missiletype.EMPTY) {
-                fireMissile();
+                Entity radarGuidedMissile = fireMissile();
+                // Lets a Radar Warning Receiver on the target know a missile is inbound
+                if (radarGuidedMissile != null && level instanceof ServerLevel serverLevel) {
+                    MissileWarningRegistry.register(serverLevel, radarGuidedMissile, ControlPos);
+                }
             } else {
                 return;
             }
@@ -113,9 +121,14 @@ public class HardpointBlockEntity extends BlockEntity {
 
     }
 
-    public void fireMissile() {
+    /**
+     * @return the fired missile if it is radar guided, otherwise null
+     */
+    @Nullable
+    public Entity fireMissile() {
         BlockState blockState = this.getBlockState();
         Vec3 launchDirection = getLaunchDirection();
+        Entity radarGuidedMissile = null;
         switch (blockState.getValue(MISSILE_TYPE)) {
             case IR -> {
                 HardpointType hardpointType = blockState.getValue(ModBlockStates.HARDPOINT_TYPE);
@@ -123,7 +136,7 @@ public class HardpointBlockEntity extends BlockEntity {
             }
             case SARH -> {
                 HardpointType hardpointType = blockState.getValue(ModBlockStates.HARDPOINT_TYPE);
-                HardpointProcedures.fireRadarSpear(level, this.worldPosition, hardpointType, launchDirection);
+                radarGuidedMissile = HardpointProcedures.fireRadarSpear(level, this.worldPosition, hardpointType, launchDirection);
             }
             case SACLOCS -> {
                 HardpointType hardpointType = blockState.getValue(ModBlockStates.HARDPOINT_TYPE);
@@ -131,6 +144,7 @@ public class HardpointBlockEntity extends BlockEntity {
             }
         }
         level.setBlock(this.worldPosition, blockState.setValue(MISSILE_TYPE, Missiletype.EMPTY), Block.UPDATE_CLIENTS);
+        return radarGuidedMissile;
     }
 
     public Vec3 getLaunchDirection() {
