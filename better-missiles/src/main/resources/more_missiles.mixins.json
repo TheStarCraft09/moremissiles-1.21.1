@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.lumareth.moremissiles.mixin",
+  "plugin": "dev.lumareth.moremissiles.mixin.MoreMissilesMixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "createradars.RadarWarningReceiverBlockEntityMixin",
+    "createradars.StationaryRadarBlockEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

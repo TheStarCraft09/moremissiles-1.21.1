@@ -1,0 +1,128 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.hunter_spear_missile",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "Rocket",
+					"pivot": [0, 8, 0],
+					"cubes": [
+						{
+							"origin": [-2, 4, -20],
+							"size": [4, 4, 44],
+							"pivot": [0, 6, 0],
+							"rotation": [0, 0, 45],
+							"uv": {
+								"north": {"uv": [3.875, 4.75], "uv_size": [0.5, 0.5]},
+								"east": {"uv": [4.375, 0], "uv_size": [5.5, 0.5]},
+								"south": {"uv": [3.25, 6], "uv_size": [0.5, 0.5]},
+								"west": {"uv": [4.375, 0.5], "uv_size": [5.5, 0.5]},
+								"up": {"uv": [0, 4], "uv_size": [0.5, 5.5]},
+								"down": {"uv": [0.5, 9.5], "uv_size": [0.5, -5.5]}
+							}
+						},
+						{
+							"origin": [-2.5, 3.5, -3],
+							"size": [5, 5, 25],
+							"pivot": [0, 6, 26],
+							"rotation": [0, 0, 45],
+							"uv": {
+								"north": {"uv": [4.125, 5.5], "uv_size": [0.625, 0.625]},
+								"east": {"uv": [4.375, 1], "uv_size": [3.125, 0.625]},
+								"south": {"uv": [5.625, 4.125], "uv_size": [0.625, 0.625]},
+								"west": {"uv": [4.375, 1.625], "uv_size": [3.125, 0.625]},
+								"up": {"uv": [1, 4], "uv_size": [0.625, 3.125]},
+								"down": {"uv": [1.625, 7.125], "uv_size": [0.625, -3.125]}
+							}
+						},
+						{
+							"origin": [-1.5, 4.5, -24],
+							"size": [3, 3, 6],
+							"pivot": [0, 6, -23],
+							"rotation": [0, 0, 45],
+							"uv": {
+								"north": {"uv": [6, 3.5], "uv_size": [0.375, 0.375]},
+								"east": {"uv": [5.625, 4.75], "uv_size": [0.75, 0.375]},
+								"south": {"uv": [3.75, 6], "uv_size": [0.375, 0.375]},
+								"west": {"uv": [5.625, 5.125], "uv_size": [0.75, 0.375]},
+								"up": {"uv": [5.625, 5.5], "uv_size": [0.375, 0.75]},
+								"down": {"uv": [2.875, 6.75], "uv_size": [0.375, -0.75]}
+							}
+						}
+					]
+				},
+				{
+					"name": "fins",
+					"parent": "Rocket",
+					"pivot": [0, 8, 16],
+					"cubes": [
+						{
+							"origin": [-8, 6, 19],
+							"size": [16, 0, 5],
+							"pivot": [0, 6, 16],
+							"rotation": [0, 0, 45],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [2, 0]},
+								"east": {"uv": [0, 0], "uv_size": [0.625, 0]},
+								"south": {"uv": [0, 0], "uv_size": [2, 0]},
+								"west": {"uv": [0, 0], "uv_size": [0.625, 0]},
+								"up": {"uv": [4.375, 2.25], "uv_size": [2, 0.625]},
+								"down": {"uv": [4.375, 3.5], "uv_size": [2, -0.625]}
+							}
+						},
+						{
+							"origin": [0, -2, 19],
+							"size": [0, 16, 5],
+							"pivot": [0, 6, 16],
+							"rotation": [0, 0, 45],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [0, 2]},
+								"east": {"uv": [4.375, 3.5], "uv_size": [0.625, 2]},
+								"south": {"uv": [0, 0], "uv_size": [0, 2]},
+								"west": {"uv": [2.25, 4.75], "uv_size": [0.625, 2]},
+								"up": {"uv": [0, 0], "uv_size": [0, 0.625]},
+								"down": {"uv": [0, 0.625], "uv_size": [0, -0.625]}
+							}
+						},
+						{
+							"origin": [0, -2, -2],
+							"size": [0, 16, 19],
+							"pivot": [0, 6, -2],
+							"rotation": [0, 0, 45],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [0, 2]},
+								"east": {"uv": [0, 0], "uv_size": [2.375, 2]},
+								"south": {"uv": [0, 0], "uv_size": [0, 2]},
+								"west": {"uv": [0, 2], "uv_size": [2.375, 2]},
+								"up": {"uv": [0, 0], "uv_size": [0, 2.375]},
+								"down": {"uv": [0, 2.375], "uv_size": [0, -2.375]}
+							}
+						},
+						{
+							"origin": [-8, 6, -2],
+							"size": [16, 0, 19],
+							"pivot": [0, 6, -2],
+							"rotation": [0, 0, 45],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [2, 0]},
+								"east": {"uv": [0, 0], "uv_size": [2.375, 0]},
+								"south": {"uv": [0, 0], "uv_size": [2, 0]},
+								"west": {"uv": [0, 0], "uv_size": [2.375, 0]},
+								"up": {"uv": [2.375, 0], "uv_size": [2, 2.375]},
+								"down": {"uv": [2.375, 4.75], "uv_size": [2, -2.375]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
